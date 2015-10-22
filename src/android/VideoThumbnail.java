@@ -3,6 +3,7 @@ package com.lulee007.cordova.videothumbnail;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
+import android.os.Environment;
 import android.provider.MediaStore;
 
 import org.apache.cordova.CallbackContext;
@@ -29,16 +30,13 @@ public class VideoThumbnail extends CordovaPlugin {
              */
 
             final int kind = args.getInt(3) > 0 && args.getInt(3) < 4 ? args.getInt(3) : MediaStore.Video.Thumbnails.MINI_KIND;
-            final String saveFolder = args.getString(4);
 
             if (videoPath == null || videoPath.isEmpty()) {
                 callbackContext.error("videoPath was wrong");
                 return true;
             }
-            if (saveFolder == null || saveFolder.isEmpty()) {
-                callbackContext.error("saveFolder was wrong");
-                return true;
-            }
+
+            final File cacheDir=activity.getExternalCacheDir();
             cordova.getThreadPool().execute(new Runnable() {
 
                 public void run() {
@@ -52,8 +50,7 @@ public class VideoThumbnail extends CordovaPlugin {
                     FileOutputStream theOutputStream = null;
                     try {
                         Date now = new Date();
-                        String filePath = saveFolder.endsWith("/") ? saveFolder : saveFolder + "/";
-                        filePath += "thumbnail_" + now.getTime() + ".jpg";
+                        String filePath =cacheDir.getAbsolutePath()+"thumbnail_" + now.getTime() + ".jpg";
                         File theOutputFile = new File(filePath);
                         if (!theOutputFile.exists()) {
                             if (!theOutputFile.createNewFile()) {

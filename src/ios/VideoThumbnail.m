@@ -20,19 +20,14 @@
     __block NSString* payload = nil;
 
     NSString* videoPath = [command.arguments objectAtIndex:0];
-    NSString* saveFolder = [command.arguments objectAtIndex:4];
+    NSString* saveFolder =  NSTemporaryDirectory();
     if(!videoPath ||videoPath.length==0){
         payload=@"videoPath was wrong";
         pluginResult=[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:payload];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
         return;
     }
-    if(!saveFolder || saveFolder.length==0){
-        payload=@"saveFolder was wrong";
-        pluginResult=[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:payload];
-        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-        return;
-    }
+    
     if(![saveFolder hasSuffix:@"/"]){
         saveFolder=[NSString stringWithFormat:@"%@/",saveFolder];
     }
@@ -40,12 +35,15 @@
     NSString* nowString=[NSString stringWithFormat:@"%.0f",now];
     NSString * savePath=[NSString stringWithFormat:@"%@thumbnail_%@.jpg",saveFolder,nowString];
     [self.commandDelegate runInBackground:^{
+        CDVPluginResult* pluginResult=nil;
         if(extractVideoThumbnail(videoPath, savePath)){
             payload=savePath;
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:payload];
         }else{
             payload=@"Could not save thumbnail";
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:payload];
         }
-        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:payload];
+        
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
     

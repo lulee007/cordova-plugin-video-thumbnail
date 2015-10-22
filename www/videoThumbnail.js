@@ -21,8 +21,7 @@ var videoThumbnail = {
                 config.videoPath,
                 config.width,
                 config.height,
-                config.kind,
-                config.saveFolder
+                config.kind
             ]);
     }
 
