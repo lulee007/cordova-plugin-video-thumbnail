@@ -1,61 +1,36 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        id="cordova-plugin-video-thumbnail"
-        version="0.0.1">
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="cordova-plugin-video-thumbnail" version="0.0.1" xmlns="http://www.phonegap.com/ns/plugins/1.0"
+        xmlns:android="http://schemas.android.com/apk/res/android">
     <name>Video Thumbnail</name>
     <description>Cordova video-thumbnail Plugin</description>
     <license>Apache-2.0</license>
     <keywords>cordova,phonegap,video thumbnail</keywords>
-
     <engines>
-        <engine name="cordova" version=">=3.0.0"/>
+        <engine name="cordova" version="&gt;=3.0.0"/>
     </engines>
-
-    <js-module src="www/videoThumbnail.js" name="videoThumbnail">
+    <js-module name="videoThumbnail" src="www/videoThumbnail.js">
         <clobbers target="videoThumbnail"/>
     </js-module>
-
-    <!-- android -->
     <platform name="android">
         <source-file src="src/android/VideoThumbnail.java" target-dir="src/com/lulee007/cordova/videothumbnail"/>
-
-        <config-file target="AndroidManifest.xml" parent="/manifest">
-            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+        <config-file parent="/manifest" target="AndroidManifest.xml">
+            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
             <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
         </config-file>
-        <config-file target="res/xml/config.xml" parent="/*">
+        <config-file parent="/*" target="res/xml/config.xml">
             <feature name="VideoThumbnail">
                 <param name="android-package" value="com.lulee007.cordova.videothumbnail.VideoThumbnail"/>
             </feature>
         </config-file>
     </platform>
-
-    <!--<platform name="ios">-->
-        <!--&lt;!&ndash; required background modes:  App registers for location updates &ndash;&gt;-->
-
-        <!--<config-file target="*-Info.plist" parent="NSLocationAlwaysUsageDescription">-->
-            <!--<string>This app requires background location tracking</string>-->
-        <!--</config-file>-->
-
-        <!--<config-file target="*-Info.plist" parent="UIBackgroundModes">-->
-            <!--<array>-->
-                <!--<string>location</string>-->
-            <!--</array>-->
-        <!--</config-file>-->
-
-        <!--<config-file target="config.xml" parent="/*">-->
-            <!--<feature name="BackgroundGeoLocation">-->
-                <!--<param name="ios-package" value="CDVBackgroundGeoLocation"/>-->
-            <!--</feature>-->
-        <!--</config-file>-->
-        <!--<framework src="AudioToolbox.framework" weak="true" />-->
-        <!--<framework src="AVFoundation.framework" weak="true" />-->
-        <!--<source-file src="src/ios/CDVBackgroundGeoLocation.m" />-->
-        <!--<header-file src="src/ios/CDVBackgroundGeoLocation.h" />-->
-     <!--</platform>-->
-
-
-
+    <platform name="ios">
+        <config-file parent="/*" target="config.xml">
+            <feature name="VideoThumbnail">
+                <param name="ios-package" value="VideoThumbnail"/>
+            </feature>
+        </config-file>
+        <source-file src="src/ios/VideoThumbnail.m"/>
+        <framework src="AVFoundation.framework"/>
+        <framework src="CoreMedia.framework"/>
+    </platform>
 </plugin>

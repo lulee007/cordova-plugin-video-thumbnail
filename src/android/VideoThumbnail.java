@@ -22,20 +22,20 @@ public class VideoThumbnail extends CordovaPlugin {
         Activity activity = this.cordova.getActivity();
         if (action.equals("buildThumbnail")) {
             final String videoPath = args.getString(0);
-            final int width = args.getInt(1)>0?args.getInt(1):100;
-            final int height = args.getInt(2)>0?args.getInt(2):100;
+            final int width = args.getInt(1) > 0 ? args.getInt(1) : 100;
+            final int height = args.getInt(2) > 0 ? args.getInt(2) : 100;
             /**
              * MediaStore.Video.Thumbnails.MICRO_KIND
              */
 
-            final int kind = args.getInt(3)>0 && args.getInt(3)<4?args.getInt(3): MediaStore.Video.Thumbnails.MINI_KIND;
+            final int kind = args.getInt(3) > 0 && args.getInt(3) < 4 ? args.getInt(3) : MediaStore.Video.Thumbnails.MINI_KIND;
             final String saveFolder = args.getString(4);
 
-            if(videoPath==null  || videoPath.isEmpty()){
+            if (videoPath == null || videoPath.isEmpty()) {
                 callbackContext.error("videoPath was wrong");
                 return true;
             }
-            if(saveFolder==null  || saveFolder.isEmpty()){
+            if (saveFolder == null || saveFolder.isEmpty()) {
                 callbackContext.error("saveFolder was wrong");
                 return true;
             }
@@ -44,7 +44,7 @@ public class VideoThumbnail extends CordovaPlugin {
                 public void run() {
                     Bitmap bitmap = null;
                     bitmap = getVideoThumbnail(videoPath, width, height, kind);
-                    if(bitmap==null){
+                    if (bitmap == null) {
                         callbackContext.error("get video thumbnail failed,maybe videopath was wrong.");
                         return;
                     }
@@ -52,7 +52,8 @@ public class VideoThumbnail extends CordovaPlugin {
                     FileOutputStream theOutputStream = null;
                     try {
                         Date now = new Date();
-                        String filePath = saveFolder.endsWith("/") ? saveFolder : saveFolder + "/thumbnail_" + now.getTime() + ".jpg";
+                        String filePath = saveFolder.endsWith("/") ? saveFolder : saveFolder + "/";
+                        filePath += "thumbnail_" + now.getTime() + ".jpg";
                         File theOutputFile = new File(filePath);
                         if (!theOutputFile.exists()) {
                             if (!theOutputFile.createNewFile()) {
@@ -62,16 +63,15 @@ public class VideoThumbnail extends CordovaPlugin {
                         }
                         if (theOutputFile.canWrite()) {
                             theOutputStream = new FileOutputStream(theOutputFile);
-                            if (theOutputStream != null) {
-                                bitmap.compress(Bitmap.CompressFormat.JPEG, 75, theOutputStream);
-                            } else {
-                                callbackContext.error("Could not save thumbnail; target not writeable");
-                                return;
-                            }
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 75, theOutputStream);
                             if (theOutputStream != null)
                                 theOutputStream.close();
+                            callbackContext.success(filePath);
+                        }else {
+                            callbackContext.error("Could not save thumbnail; target not writeable");
+                            return;
                         }
-                    } catch (IOException e) {
+                    } catch ( IOException e ) {
                         e.printStackTrace();
                         callbackContext.error("I/O exception saving thumbnail");
                     } finally {
@@ -79,11 +79,12 @@ public class VideoThumbnail extends CordovaPlugin {
                             bitmap.recycle();
                         }
                     }
-                    callbackContext.success(); // Thread-safe.
+
                 }
             });
             return true;
         }
+
         return false;
     }
 
