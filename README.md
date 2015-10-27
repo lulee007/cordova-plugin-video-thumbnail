@@ -1,11 +1,14 @@
 # cordova-plugin-video-thumbnail
 获取本地视频的缩略图
 ### Using the plugin
-`videoThumbnail.build`
-params:
-    * success callback function
-    * error callback function
-    * configs object
+method:  
+`videoThumbnail.build`  
+
+params:  
+* success callback function
+* error callback function
+* configs object
+
 ```javascript
 window.plugins.videoThumbnail.build(
       function (data) {
